@@ -17,3 +17,5 @@ Simply edit the config at the start of economist parser async.py file, and use i
  `pip3.5 install goslate`
  
  `pip3.5 install beautifulsoup4`
+  
+ `pip3.5 install python-docx`
