@@ -8,6 +8,9 @@ import os
 import time
 import itertools
 import random
+from docx import Document
+from docx.shared import Pt
+
 
 # =====Config======
 # defines if random proxies are used
@@ -82,15 +85,37 @@ def parse_article(name, article):
     return save_article_to_file(data, folder_to_save)
 
 
+def text_font(run):
+    font = run.font
+    font.name = 'Calibri Light'
+    font.size = Pt(11)
+
+
 def save_article_to_file(data, folder):
     text, length, thousand, translated, name = data
-    filename = str(length) + '|' + name + '.txt'
+    filename = str(length) + '|' + name + '.docx'
     try:
         if not os.path.exists(folder):
             os.makedirs(folder)
-        f = open(os.path.join(folder, filename), 'w')
-        f.write("Length:" + str(
-            length) + "\nTitle:\n" + name + "\nText:\n" + text + "\nFirst thousand\n" + thousand + "\nTranslation:\n" + translated)
+        fullname = os.path.join(folder, filename)
+        document = Document()
+
+        document.add_heading('Length:', 1)
+        text_font(document.add_paragraph().add_run(str(length)))
+
+        document.add_heading('Title:', 2)
+        text_font(document.add_paragraph().add_run(name))
+
+        document.add_heading('Text:', 3)
+        text_font(document.add_paragraph().add_run(text))
+
+        document.add_heading('First 1000:', 4)
+        text_font(document.add_paragraph().add_run(thousand))
+
+        document.add_heading('Translation:', 5)
+        text_font(document.add_paragraph().add_run(translated))
+
+        document.save(fullname)
         if verbose:
             print('Wrote ' + name + ' to file\n')
         return True
